@@ -1,25 +1,38 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *      Copyright (c) 2004-2013 Stuart Boston
+ *
+ *      This file is part of the Pushover API.
+ *
+ *      The Pushover API is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
+ *
+ *      The Pushover API is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with the Pushover API.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 package com.omertron.pushoverapi;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Stuart
- */
 public class PushoverApiTest {
+
     private static final Logger LOG = LoggerFactory.getLogger(PushoverApiTest.class);
-    private static final String APIKEY = "";
+    private static final String API_KEY = "wzlYTySq1yg3mhz4WiKHFVSFSX7kHO";
+    private PushoverApi pushover = new PushoverApi(API_KEY, API_KEY, API_KEY);
 
     public PushoverApiTest() {
     }
@@ -39,87 +52,6 @@ public class PushoverApiTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getAppToken method, of class PushoverApi.
-     */
-    @Test
-    public void testGetAppToken() {
-        LOG.info("getAppToken");
-        PushoverApi instance = null;
-        String expResult = "";
-        String result = instance.getAppToken();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setAppToken method, of class PushoverApi.
-     */
-    @Test
-    public void testSetAppToken() {
-        LOG.info("setAppToken");
-        String appToken = "";
-        PushoverApi instance = null;
-        instance.setAppToken(appToken);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getUserToken method, of class PushoverApi.
-     */
-    @Test
-    public void testGetUserToken() {
-        LOG.info("getUserToken");
-        PushoverApi instance = null;
-        String expResult = "";
-        String result = instance.getUserToken();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setUserToken method, of class PushoverApi.
-     */
-    @Test
-    public void testSetUserToken() {
-        LOG.info("setUserToken");
-        String userToken = "";
-        PushoverApi instance = null;
-        instance.setUserToken(userToken);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDevice method, of class PushoverApi.
-     */
-    @Test
-    public void testGetDevice() {
-        LOG.info("getDevice");
-        PushoverApi instance = null;
-        String expResult = "";
-        String result = instance.getDevice();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setDevice method, of class PushoverApi.
-     */
-    @Test
-    public void testSetDevice() {
-        LOG.info("setDevice");
-        String device = "";
-        PushoverApi instance = null;
-        instance.setDevice(device);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -180,7 +112,7 @@ public class PushoverApiTest {
      * Test of sendMessage method, of class PushoverApi.
      */
     @Test
-    public void testSendMessage_String_String() throws Exception {
+    public void testSendMessage_2args() throws Exception {
         LOG.info("sendMessage");
         String message = "";
         String title = "";
@@ -196,7 +128,7 @@ public class PushoverApiTest {
      * Test of sendMessage method, of class PushoverApi.
      */
     @Test
-    public void testSendMessage_String() throws Exception {
+    public void testSendMessage_1arg() throws Exception {
         LOG.info("sendMessage");
         String message = "";
         PushoverApi instance = null;
@@ -205,5 +137,13 @@ public class PushoverApiTest {
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }
+
+    @Test
+    public void testPropertiesSave() {
+    }
+
+    @Test
+    public void testPropertiesLoad() {
     }
 }

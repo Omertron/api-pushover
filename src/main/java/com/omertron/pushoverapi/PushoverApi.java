@@ -1,18 +1,46 @@
+/*
+ *      Copyright (c) 2004-2013 Stuart Boston
+ *
+ *      This file is part of the Pushover API.
+ *
+ *      The Pushover API is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
+ *
+ *      The Pushover API is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with the Pushover API.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package com.omertron.pushoverapi;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.Properties;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PushoverApi {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PushoverApi.class);
     /**
      * The application token from PushoverApi.net's application section.
      */
@@ -34,10 +62,12 @@ public class PushoverApi {
      * Constants
      */
     private static final String PUSHOVER_URL = "https://api.pushover.net/1/messages.json";
+    private static final String PROPERTY_FILENAME = "pushover.properties";
     private static final String PO_MESSAGE = "&message=";
     private static final String PO_TITLE = "&title=";
     private static final String PO_PRIORITY = "&priority=";
     private static final String PO_URL = "&url=";
+    private static final String PO_URL_TITLE="&url_title=";
     private static final String ENCODING = "UTF-8";
     private static final Integer PRIORITY_DEF = 0;
     private static final Integer PRIORITY_MIN = -1;
@@ -135,8 +165,8 @@ public class PushoverApi {
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    public String sendMessage(String message, String title, String url, String urlTitle,Integer priority) throws UnsupportedEncodingException, IOException {
-        return sendToPushover(sendMessage(message, title, url, urlTitle, priority));
+    public String sendMessage(String message, String title, String url, String urlTitle, Integer priority) throws UnsupportedEncodingException, IOException {
+        return sendToPushover(generateMessageString(message, title, url, urlTitle, priority));
     }
 
     /**
@@ -219,6 +249,10 @@ public class PushoverApi {
             poMessage.append(PO_URL).append(URLEncoder.encode(url, ENCODING));
         }
 
+        if(StringUtils.isNotBlank(urlTitle)) {
+            poMessage.append(PO_URL_TITLE).append(URLEncoder.encode(urlTitle, ENCODING));
+        }
+
         if (priority != PRIORITY_DEF) {
             poMessage.append(PO_PRIORITY);
             if (priority <= PRIORITY_MIN) {
@@ -298,5 +332,66 @@ public class PushoverApi {
             }
         }
         return output.toString();
+    }
+
+    public boolean propertiesSave() {
+        return propertiesSave(PROPERTY_FILENAME);
+    }
+
+    public boolean propertiesSave(String filename) {
+        Properties props = new Properties();
+        props.setProperty("apptoken", appToken);
+        props.setProperty("usertoken", userToken);
+        if (StringUtils.isNotBlank(device)) {
+            props.setProperty("device", device);
+        }
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(filename);
+            props.store(fos, "Pushover API Properties");
+        } catch (IOException ex) {
+            LOG.warn("Unable to save properties file '{}', error: {}", filename, ex.getMessage());
+            return Boolean.FALSE;
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException ex) {
+                LOG.debug("Failed to close properties file '{}' properly. Error: {}", filename, ex.getMessage());
+            }
+        }
+
+        return Boolean.TRUE;
+    }
+
+    public boolean propertiesLoad() {
+        return propertiesLoad(PROPERTY_FILENAME);
+    }
+
+    public boolean propertiesLoad(String filename) {
+        Properties props = new Properties();
+
+        InputStream propsStream = null;
+        File propsFile = new File(filename);
+        try {
+            propsStream = new FileInputStream(propsFile);
+            props.load(propsStream);
+        } catch (FileNotFoundException ex) {
+            LOG.warn("Property file '{}' not found.", propsFile.getAbsolutePath());
+            return Boolean.FALSE;
+        } catch (IOException ex) {
+            LOG.warn("Error processing properties file '{}', error: {}", propsFile.getAbsolutePath(), ex.getMessage());
+            return Boolean.FALSE;
+        } finally {
+            if (propsStream != null) {
+                try {
+                    propsStream.close();
+                } catch (IOException ex) {
+                    LOG.debug("Failed to close properties file '{}' properly. Error: {}", filename, ex.getMessage());
+                }
+            }
+        }
+
+        return Boolean.TRUE;
     }
 }
