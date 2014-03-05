@@ -1,5 +1,5 @@
 /*
- *      Copyright (c) 2004-2013 Stuart Boston
+ *      Copyright (c) 2013-2014 Stuart Boston
  *
  *      This file is part of the Pushover API.
  *
@@ -56,7 +56,7 @@ public class PushoverApi {
     /**
      * The generated authentication string based on the tokens and device
      */
-    private String authenticationTokens;
+    private final String authenticationTokens;
 
     /*
      * Constants
