@@ -39,7 +39,7 @@ public class PushoverApiTest {
 
     @BeforeClass
     public static void setUpClass() {
-        TestLogger.Configure();
+        TestLogger.configure();
     }
 
     @AfterClass
